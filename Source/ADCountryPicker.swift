@@ -42,18 +42,20 @@ open class ADCountryPicker: UITableViewController {
         let countriesCodes = customCountriesCode == nil ? Locale.isoRegionCodes : customCountriesCode!
         
         for countryCode in countriesCodes {
-            let displayName = (locale as NSLocale).displayName(forKey: NSLocale.Key.countryCode, value: countryCode)
-            let countryData = CallingCodes.filter { $0["code"] == countryCode }
-            let country: ADCountry
-            
-            if countryData.count > 0, let dialCode = countryData[0]["dial_code"] {
-                country = ADCountry(name: displayName!, code: countryCode, dialCode: dialCode)
+            if let displayName = (locale as NSLocale).displayName(forKey: .countryCode, value: countryCode) {
+                let countryData = CallingCodes.filter { $0["code"] == countryCode }
+                let country: ADCountry
+
+                if countryData.count > 0, let dialCode = countryData[0]["dial_code"] {
+                    country = ADCountry(name: displayName, code: countryCode, dialCode: dialCode)
+                } else {
+                    country = ADCountry(name: displayName, code: countryCode)
+                }
+                unsortedCountries.append(country)
             } else {
-                country = ADCountry(name: displayName!, code: countryCode)
+                print("Error: Invalid country code \(countryCode)") 
             }
-            unsortedCountries.append(country)
         }
-        
         return unsortedCountries
     }
     
